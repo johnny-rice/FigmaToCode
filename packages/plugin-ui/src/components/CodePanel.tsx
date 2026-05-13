@@ -91,6 +91,7 @@ const CodePanel = (props: CodePanelProps) => {
     ? truncateCode(prefixedCode, initialLinesToShow)
     : prefixedCode;
   const showMoreButton = lineCount > initialLinesToShow;
+  const showCodeCopyButton = lineCount > 5;
 
   const handleButtonHover = () => setSyntaxHovered(true);
   const handleButtonLeave = () => setSyntaxHovered(false);
@@ -213,13 +214,15 @@ const CodePanel = (props: CodePanelProps) => {
           <EmptyState />
         ) : (
           <>
-            <CopyButton
-              value={prefixedCode}
-              showLabel={false}
-              onMouseEnter={handleButtonHover}
-              onMouseLeave={handleButtonLeave}
-              className="absolute right-2 top-2 z-10 h-7 w-7 bg-neutral-800/90 p-0 text-neutral-200 shadow-sm backdrop-blur-sm hover:bg-neutral-700 hover:text-white dark:bg-neutral-800/90 dark:hover:bg-neutral-700"
-            />
+            {showCodeCopyButton && (
+              <CopyButton
+                value={prefixedCode}
+                showLabel={false}
+                onMouseEnter={handleButtonHover}
+                onMouseLeave={handleButtonLeave}
+                className="absolute right-2 top-2 z-10 h-7 w-7 rounded-md bg-neutral-800/90 p-0 text-neutral-200 shadow-sm backdrop-blur-sm hover:bg-neutral-700 hover:text-white dark:bg-neutral-800/90 dark:hover:bg-neutral-700"
+              />
+            )}
             <SyntaxHighlighter
               language={
                 selectedFramework === "HTML" &&
