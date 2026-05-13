@@ -47,12 +47,13 @@ export function CopyButton({
   return (
     <Button
       variant="ghost"
-      size="sm"
+      size={showLabel ? "sm" : "icon-sm"}
       onClick={handleCopy}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className={cn(
-        "relative h-8 overflow-hidden rounded-md px-3 text-sm font-medium text-foreground transition-[background-color,transform,color] duration-150 ease-out hover:bg-neutral-200 active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 dark:hover:bg-neutral-600",
+        "relative overflow-hidden rounded-md text-sm font-medium text-foreground transition-[background-color,transform,color] duration-150 ease-out hover:bg-neutral-200 active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 dark:hover:bg-neutral-600",
+        showLabel ? "h-8 px-3" : "h-7 w-7 gap-0 p-0",
         "bg-neutral-100 dark:bg-neutral-700",
         className,
       )}
