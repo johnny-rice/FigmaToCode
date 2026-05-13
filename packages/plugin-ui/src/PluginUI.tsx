@@ -21,6 +21,8 @@ import Loading from "./components/Loading";
 import { useState } from "react";
 import { InfoIcon } from "lucide-react";
 import React from "react";
+import { ScrollArea } from "./components/ui/scroll-area";
+import { TooltipProvider } from "./components/ui/tooltip";
 
 type PluginUIProps = {
   code: string;
@@ -94,89 +96,91 @@ export const PluginUI = (props: PluginUIProps) => {
   const warnings = props.warnings ?? [];
 
   return (
-    <div className="flex flex-col h-full dark:text-white">
-      <div className="p-2 dark:bg-card">
-        <div className="flex gap-1 bg-muted dark:bg-card rounded-lg p-1">
-          <FrameworkTabs
-            frameworks={frameworks}
-            selectedFramework={props.selectedFramework}
-            setSelectedFramework={props.setSelectedFramework}
-            showAbout={showAbout}
-            setShowAbout={setShowAbout}
-          />
-          <button
-            className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium ${
-              showAbout
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "bg-muted hover:bg-primary/90 hover:text-primary-foreground"
-            }`}
-            onClick={() => {
-              setShowAbout(!showAbout);
-            }}
-            aria-label="About"
-          >
-            <InfoIcon size={16} />
-          </button>
-        </div>
-      </div>
-      <div
-        style={{
-          height: 1,
-          width: "100%",
-          backgroundColor: "rgba(255,255,255,0.12)",
-        }}
-      ></div>
-      <div className="flex flex-col h-full overflow-y-auto">
-        {showAbout ? (
-          <About
-            useOldPluginVersion={props.settings?.useOldPluginVersion2025}
-            onPreferenceChanged={props.onPreferenceChanged}
-          />
-        ) : (
-          <div className="flex flex-col items-center px-4 py-2 gap-2 dark:bg-transparent">
-            {isEmpty === false && props.htmlPreview && (
-              <Preview
-                htmlPreview={props.htmlPreview}
-                expanded={previewExpanded}
-                setExpanded={setPreviewExpanded}
-                viewMode={previewViewMode}
-                setViewMode={setPreviewViewMode}
-                bgColor={previewBgColor}
-                setBgColor={setPreviewBgColor}
-              />
-            )}
-
-            {warnings.length > 0 && <WarningsPanel warnings={warnings} />}
-
-            <CodePanel
-              code={props.code}
+    <TooltipProvider>
+      <div className="flex flex-col h-full overflow-hidden dark:text-white">
+        <div className="p-2 dark:bg-card">
+          <div className="flex gap-1 bg-muted dark:bg-card rounded-lg p-1">
+            <FrameworkTabs
+              frameworks={frameworks}
               selectedFramework={props.selectedFramework}
-              preferenceOptions={preferenceOptions}
-              selectPreferenceOptions={selectPreferenceOptions}
-              settings={props.settings}
+              setSelectedFramework={props.setSelectedFramework}
+              showAbout={showAbout}
+              setShowAbout={setShowAbout}
+            />
+            <button
+              className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium ${
+                showAbout
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-muted hover:bg-primary/90 hover:text-primary-foreground"
+              }`}
+              onClick={() => {
+                setShowAbout(!showAbout);
+              }}
+              aria-label="About"
+            >
+              <InfoIcon size={16} />
+            </button>
+          </div>
+        </div>
+        <div
+          style={{
+            height: 1,
+            width: "100%",
+            backgroundColor: "rgba(255,255,255,0.12)",
+          }}
+        ></div>
+        <ScrollArea className="min-h-0 flex-1 overflow-hidden">
+          {showAbout ? (
+            <About
+              useOldPluginVersion={props.settings?.useOldPluginVersion2025}
               onPreferenceChanged={props.onPreferenceChanged}
             />
+          ) : (
+            <div className="flex flex-col items-center px-4 py-2 gap-2 dark:bg-transparent">
+              {isEmpty === false && props.htmlPreview && (
+                <Preview
+                  htmlPreview={props.htmlPreview}
+                  expanded={previewExpanded}
+                  setExpanded={setPreviewExpanded}
+                  viewMode={previewViewMode}
+                  setViewMode={setPreviewViewMode}
+                  bgColor={previewBgColor}
+                  setBgColor={setPreviewBgColor}
+                />
+              )}
 
-            {props.colors.length > 0 && (
-              <ColorsPanel
-                colors={props.colors}
-                onColorClick={(value) => {
-                  copy(value);
-                }}
-              />
-            )}
+              {warnings.length > 0 && <WarningsPanel warnings={warnings} />}
 
-            {props.gradients.length > 0 && (
-              <GradientsPanel
-                gradients={props.gradients}
-                onColorClick={(value) => {
-                  copy(value);
-                }}
+              <CodePanel
+                code={props.code}
+                selectedFramework={props.selectedFramework}
+                preferenceOptions={preferenceOptions}
+                selectPreferenceOptions={selectPreferenceOptions}
+                settings={props.settings}
+                onPreferenceChanged={props.onPreferenceChanged}
               />
-            )}
-          </div>
-        )}
+
+              {props.colors.length > 0 && (
+                <ColorsPanel
+                  colors={props.colors}
+                  onColorClick={(value) => {
+                    copy(value);
+                  }}
+                />
+              )}
+
+              {props.gradients.length > 0 && (
+                <GradientsPanel
+                  gradients={props.gradients}
+                  onColorClick={(value) => {
+                    copy(value);
+                  }}
+                />
+              )}
+            </div>
+          )}
+        </ScrollArea>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Copy, Check } from "lucide-react";
 import copy from "copy-to-clipboard";
 import { cn } from "../lib/utils";
+import { Button } from "./ui/button";
 
 interface CopyButtonProps {
   value: string;
@@ -44,51 +45,58 @@ export function CopyButton({
   };
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={handleCopy}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className={cn(
-        `inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-300`,
-        isCopied
-          ? "bg-primary text-primary-foreground"
-          : "bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-muted-foreground/30 text-foreground",
+        "relative h-8 overflow-hidden rounded-md px-3 text-sm font-medium text-foreground transition-colors duration-150 ease-out hover:bg-neutral-200 motion-reduce:transition-none dark:hover:bg-neutral-600",
+        "bg-neutral-100 dark:bg-neutral-700",
         className,
-        `relative`,
       )}
       aria-label={isCopied ? "Copied!" : "Copy to clipboard"}
     >
-      <div className="relative h-4 w-4 mr-1.5">
+      <span className="relative mr-1.5 h-4 w-4" aria-hidden="true">
         <span
-          className={`absolute inset-0 transition-all duration-200 ${
-            isCopied
-              ? "opacity-0 scale-75 rotate-[-10deg]"
-              : "opacity-100 scale-100 rotate-0"
-          }`}
+          className={cn(
+            "absolute inset-0 transition-opacity duration-150 ease-out motion-reduce:transition-none",
+            isCopied ? "opacity-0" : "opacity-100",
+          )}
         >
-          <Copy className="h-4 w-4 text-foreground" />
+          <Copy className="h-4 w-4" />
         </span>
         <span
-          className={`absolute inset-0 transition-all duration-200 ${
-            isCopied
-              ? "opacity-100 scale-100 rotate-0"
-              : "opacity-0 scale-75 rotate-[10deg]"
-          }`}
+          className={cn(
+            "absolute inset-0 transition-opacity duration-150 ease-out motion-reduce:transition-none",
+            isCopied ? "text-primary opacity-100" : "opacity-0",
+          )}
         >
-          <Check className="h-4 w-4 text-primary-foreground" />
+          <Check className="h-4 w-4" />
         </span>
-      </div>
+      </span>
 
       {showLabel && (
-        <span className="font-medium">{isCopied ? "Copied" : "Copy"}</span>
+        <span className="grid min-w-[3.9rem] text-left">
+          <span
+            className={cn(
+              "col-start-1 row-start-1 transition-opacity duration-150 ease-out motion-reduce:transition-none",
+              isCopied ? "opacity-0" : "opacity-100",
+            )}
+          >
+            Copy
+          </span>
+          <span
+            className={cn(
+              "col-start-1 row-start-1 transition-opacity duration-150 ease-out motion-reduce:transition-none",
+              isCopied ? "text-primary opacity-100" : "opacity-0",
+            )}
+          >
+            Copied
+          </span>
+        </span>
       )}
-
-      {isCopied && (
-        <span
-          className="absolute inset-0 rounded-md animate-pulse bg-primary/10"
-          aria-hidden="true"
-        />
-      )}
-    </button>
+    </Button>
   );
 }

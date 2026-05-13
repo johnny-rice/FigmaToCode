@@ -35,7 +35,7 @@ export const defaultPluginSettings: PluginSettings = {
   htmlGenerationMode: "html",
   tailwindGenerationMode: "jsx",
   baseFontSize: 16,
-  useTailwind4: false,
+  useTailwind4: true,
   thresholdPercent: 15,
   baseFontFamily: "",
   fontFamilyCustomConfig: {},

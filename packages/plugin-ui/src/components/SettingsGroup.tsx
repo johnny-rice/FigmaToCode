@@ -2,6 +2,11 @@ import { useState, ReactNode } from "react";
 import { LocalCodegenPreferenceOptions, PluginSettings } from "types";
 import SelectableToggle from "./SelectableToggle";
 import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 
 interface SettingsGroupProps {
   title: string;
@@ -32,17 +37,20 @@ const SettingsGroup: React.FC<SettingsGroupProps> = ({
   }
 
   return (
-    <div className="w-full mb-2.5 last:mb-0">
+    <Collapsible
+      open={expanded || alwaysExpanded}
+      onOpenChange={setExpanded}
+      className="w-full mb-2.5 last:mb-0"
+    >
       {alwaysExpanded ? (
         <div className="flex items-center mb-1">
-          <span className="text-xs font-semibold text-foreground">
-            {title}
-          </span>
+          <span className="text-xs font-semibold text-foreground">{title}</span>
         </div>
       ) : (
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors w-full text-left"
+        <CollapsibleTrigger
+          render={
+            <button className="flex items-center justify-start gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors w-full text-left h-auto p-0" />
+          }
         >
           {expanded ? (
             <ChevronDownIcon className="w-3.5 h-3.5 shrink-0" />
@@ -50,10 +58,10 @@ const SettingsGroup: React.FC<SettingsGroupProps> = ({
             <ChevronRightIcon className="w-3.5 h-3.5 shrink-0" />
           )}
           <span className="truncate">{title}</span>
-        </button>
+        </CollapsibleTrigger>
       )}
 
-      {(expanded || alwaysExpanded) && (
+      <CollapsibleContent>
         <div
           className={`flex flex-col gap-2.5 ${!alwaysExpanded ? "px-4 mt-2" : ""}`}
         >
@@ -82,8 +90,8 @@ const SettingsGroup: React.FC<SettingsGroupProps> = ({
           )}
           {children}
         </div>
-      )}
-    </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 };
 

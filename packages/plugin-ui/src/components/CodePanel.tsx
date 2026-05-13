@@ -205,7 +205,7 @@ const CodePanel = (props: CodePanelProps) => {
       )}
 
       <div
-        className={`rounded-lg ring-green-600 transition-all duration-200 overflow-clip ${
+        className={`relative rounded-lg ring-green-600 transition-all duration-200 overflow-clip ${
           syntaxHovered ? "ring-2" : "ring-0"
         }`}
       >
@@ -213,6 +213,13 @@ const CodePanel = (props: CodePanelProps) => {
           <EmptyState />
         ) : (
           <>
+            <CopyButton
+              value={prefixedCode}
+              showLabel={false}
+              onMouseEnter={handleButtonHover}
+              onMouseLeave={handleButtonLeave}
+              className="absolute right-2 top-2 z-10 h-7 w-7 bg-neutral-800/90 p-0 text-neutral-200 shadow-sm backdrop-blur-sm hover:bg-neutral-700 hover:text-white dark:bg-neutral-800/90 dark:hover:bg-neutral-700"
+            />
             <SyntaxHighlighter
               language={
                 selectedFramework === "HTML" &&

@@ -6,7 +6,7 @@ export const preferenceOptions: LocalCodegenPreferenceOptions[] = [
     propertyName: "useTailwind4",
     label: "Tailwind 4",
     description: "Enable Tailwind CSS version 4 features and syntax.",
-    isDefault: false,
+    isDefault: true,
     includedLanguages: ["Tailwind"],
   },
   {

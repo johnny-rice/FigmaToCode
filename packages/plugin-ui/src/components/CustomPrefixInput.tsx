@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HelpCircle, Check } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface FormFieldProps {
   // Common props
@@ -10,7 +11,7 @@ interface FormFieldProps {
   helpText?: string;
 
   // Validation props
-  type?: "text" | "number"| "json";
+  type?: "text" | "number" | "json";
   min?: number;
   max?: number;
   suffix?: string;
@@ -116,41 +117,47 @@ const FormField = React.memo(
         }
 
         try {
-            // Try to parse the JSON
-            const config = JSON.parse(value);
+          // Try to parse the JSON
+          const config = JSON.parse(value);
 
-            // Validate that the config is an object
-            if (typeof config !== 'object' || Array.isArray(config) || config === null) {
-              throw new Error("Configuration must be a valid JSON object");
-            }
-
-            for (const item in config) {
-              if (!Array.isArray(config[item])) {
-                throw new Error(`Key ${item} is not valid and should be an array`);
-              }
-              config[item].forEach((val) => {
-                if (typeof val !== 'string') {
-                  throw new Error(`Values from Key ${item} should be string`);
-                }
-              });
-            }
-
-            // Additional validation could be added here based on expected structure
-            // For example, checking specific properties or types
-
-            // If valid, update the preference
-            setHasError(false);
-            setErrorMessage("");
-            return true
-          } catch (error) {
-            // Handle parsing errors
-            console.error("Invalid JSON configuration:", error);
-            setHasError(true);
-            setErrorMessage(`Invalid JSON configuration: ${error}`)
-            // You could show an error message to the user here
-            // Or reset to default/previous value
-            return false
+          // Validate that the config is an object
+          if (
+            typeof config !== "object" ||
+            Array.isArray(config) ||
+            config === null
+          ) {
+            throw new Error("Configuration must be a valid JSON object");
           }
+
+          for (const item in config) {
+            if (!Array.isArray(config[item])) {
+              throw new Error(
+                `Key ${item} is not valid and should be an array`,
+              );
+            }
+            config[item].forEach((val) => {
+              if (typeof val !== "string") {
+                throw new Error(`Values from Key ${item} should be string`);
+              }
+            });
+          }
+
+          // Additional validation could be added here based on expected structure
+          // For example, checking specific properties or types
+
+          // If valid, update the preference
+          setHasError(false);
+          setErrorMessage("");
+          return true;
+        } catch (error) {
+          // Handle parsing errors
+          console.error("Invalid JSON configuration:", error);
+          setHasError(true);
+          setErrorMessage(`Invalid JSON configuration: ${error}`);
+          // You could show an error message to the user here
+          // Or reset to default/previous value
+          return false;
+        }
       }
 
       return true;
@@ -163,7 +170,9 @@ const FormField = React.memo(
       setHasChanges(newValue !== String(initialValue));
     };
 
-    const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleTextareaChange = (
+      e: React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
       const newValue = e.target.value;
       setInputValue(newValue);
       validateInput(newValue);
@@ -201,7 +210,9 @@ const FormField = React.memo(
       }
     };
 
-    const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleTextareaKeyDown = (
+      e: React.KeyboardEvent<HTMLTextAreaElement>,
+    ) => {
       // Only apply changes on Ctrl+Enter or Command+Enter for textarea
       if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
         e.preventDefault();
@@ -234,13 +245,16 @@ const FormField = React.memo(
           </label>
 
           {helpText && (
-            <div className="relative group">
-              <HelpCircle className="w-3 h-3 text-gray-400" />
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 w-56 p-2 bg-white dark:bg-gray-800 shadow-lg rounded-sm border border-gray-200 dark:border-gray-700 text-xs hidden group-hover:block z-10">
+            <Tooltip>
+              <TooltipTrigger
+                render={<span className="inline-flex cursor-help" />}
+              >
+                <HelpCircle className="w-3 h-3 text-gray-400" />
+              </TooltipTrigger>
+              <TooltipContent className="w-56 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 shadow-lg">
                 {helpText}
-                <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-white dark:border-t-gray-800"></div>
-              </div>
-            </div>
+              </TooltipContent>
+            </Tooltip>
           )}
 
           {showSuccess && (
