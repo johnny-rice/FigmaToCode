@@ -70,7 +70,7 @@ const swiftuiWidgetGenerator = (
   let comp: string[] = [];
 
   visibleSceneNode.forEach((node) => {
-    switch (node.type) {
+    switch ((node as any).type) {
       case "RECTANGLE":
       case "ELLIPSE":
       case "LINE":
@@ -84,6 +84,7 @@ const swiftuiWidgetGenerator = (
       case "INSTANCE":
       case "COMPONENT":
       case "COMPONENT_SET":
+      case "SLOT":
         comp.push(swiftuiFrame(node, indentLevel));
         break;
       case "TEXT":
@@ -249,7 +250,7 @@ const widgetGeneratorWithLimits = (
   let strBuilder = "";
   const slicedChildren = node.children.slice(0, 100);
 
-  // I believe no one should have more than 100 items in a single nesting level. If you do, please email me.
+  // I believe no one should have more than 100 items in a single nesting level.
   if (node.children.length > 100) {
     strBuilder += `\n// SwiftUI has a 10 item limit in Stacks. By grouping them, it can grow even more. 
 // It seems, however, that you have more than 100 items at the same level. Wow!

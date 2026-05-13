@@ -96,7 +96,7 @@ const flutterWidgetGenerator = (
   const visibleSceneNode = getVisibleNodes(sceneNode);
 
   visibleSceneNode.forEach((node) => {
-    switch (node.type) {
+    switch ((node as any).type) {
       case "RECTANGLE":
       case "ELLIPSE":
       case "STAR":
@@ -111,6 +111,7 @@ const flutterWidgetGenerator = (
       case "INSTANCE":
       case "COMPONENT":
       case "COMPONENT_SET":
+      case "SLOT":
         comp.push(flutterFrame(node));
         break;
       case "SECTION":

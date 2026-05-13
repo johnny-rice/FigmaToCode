@@ -153,7 +153,7 @@ const composeWidgetGenerator = (
   const visibleSceneNode = getVisibleNodes(sceneNode);
 
   visibleSceneNode.forEach((node) => {
-    switch (node.type) {
+    switch ((node as any).type) {
       case "RECTANGLE":
       case "ELLIPSE":
       case "STAR":
@@ -168,6 +168,7 @@ const composeWidgetGenerator = (
       case "INSTANCE":
       case "COMPONENT":
       case "COMPONENT_SET":
+      case "SLOT":
         comp.push(composeFrame(node));
         break;
       case "SECTION":

@@ -732,6 +732,7 @@ export type IsLayerTrait = {
     | SectionNode
     | ShapeWithTextNode
     | SliceNode
+    | SlotNode
     | StarNode
     | StickyNode
     | TableNode
@@ -798,6 +799,7 @@ export type IsLayerTrait = {
     | SectionNode
     | ShapeWithTextNode
     | SliceNode
+    | SlotNode
     | StarNode
     | StickyNode
     | TableNode
@@ -960,6 +962,13 @@ export type IsLayerTrait = {
      */
     type: 'SLICE'
   } & IsLayerTrait
+
+  export type SlotNode = {
+    /**
+     * The type of this node, represented by the string literal "SLOT"
+     */
+    type: 'SLOT'
+  } & FrameTraits
   
   export type InstanceNode = {
     /**
@@ -2067,7 +2076,12 @@ export type IsLayerTrait = {
   /**
    * Component property type.
    */
-  export type ComponentPropertyType = 'BOOLEAN' | 'INSTANCE_SWAP' | 'TEXT' | 'VARIANT'
+  export type ComponentPropertyType =
+    | 'BOOLEAN'
+    | 'INSTANCE_SWAP'
+    | 'TEXT'
+    | 'VARIANT'
+    | 'SLOT'
   
   /**
    * Instance swap preferred value.
@@ -2096,7 +2110,7 @@ export type IsLayerTrait = {
     /**
      * Initial value of this property for instances.
      */
-    defaultValue: boolean | string
+    defaultValue: boolean | string | string[]
   
     /**
      * All possible values for this property. Only exists on VARIANT properties.
@@ -2121,7 +2135,7 @@ export type IsLayerTrait = {
     /**
      * Value of the property for this component instance.
      */
-    value: boolean | string
+    value: boolean | string | string[]
   
     /**
      * Preferred values for this property. Only applicable if type is `INSTANCE_SWAP`.

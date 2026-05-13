@@ -4,7 +4,6 @@ import GradientsPanel from "./components/GradientsPanel";
 import ColorsPanel from "./components/ColorsPanel";
 import CodePanel from "./components/CodePanel";
 import About from "./components/About";
-import EmailPanel from "./components/EmailPanel";
 import WarningsPanel from "./components/WarningsPanel";
 import {
   Framework,
@@ -20,7 +19,7 @@ import {
 } from "./codegenPreferenceOptions";
 import Loading from "./components/Loading";
 import { useState } from "react";
-import { InfoIcon, MailIcon } from "lucide-react";
+import { InfoIcon } from "lucide-react";
 import React from "react";
 
 type PluginUIProps = {
@@ -46,9 +45,7 @@ type FrameworkTabsProps = {
   selectedFramework: Framework;
   setSelectedFramework: (framework: Framework) => void;
   showAbout: boolean;
-  showEmail: boolean;
   setShowAbout: (show: boolean) => void;
-  setShowEmail: (show: boolean) => void;
 };
 
 const FrameworkTabs = ({
@@ -56,9 +53,7 @@ const FrameworkTabs = ({
   selectedFramework,
   setSelectedFramework,
   showAbout,
-  showEmail,
   setShowAbout,
-  setShowEmail,
 }: FrameworkTabsProps) => {
   return (
     <div className="grid grid-cols-4 sm:grid-cols-2 md:grid-cols-4 gap-1 grow">
@@ -66,14 +61,13 @@ const FrameworkTabs = ({
         <button
           key={`tab ${tab}`}
           className={`w-full h-8 flex items-center justify-center text-sm rounded-md transition-colors font-medium ${
-            selectedFramework === tab && !showAbout && !showEmail
+            selectedFramework === tab && !showAbout
               ? "bg-primary text-primary-foreground shadow-xs"
               : "bg-muted hover:bg-primary/90 hover:text-primary-foreground"
           }`}
           onClick={() => {
             setSelectedFramework(tab as Framework);
             setShowAbout(false);
-            setShowEmail(false);
           }}
         >
           {tab}
@@ -85,7 +79,6 @@ const FrameworkTabs = ({
 
 export const PluginUI = (props: PluginUIProps) => {
   const [showAbout, setShowAbout] = useState(false);
-  const [showEmail, setShowEmail] = useState(false);
 
   const [previewExpanded, setPreviewExpanded] = useState(false);
   const [previewViewMode, setPreviewViewMode] = useState<
@@ -109,23 +102,8 @@ export const PluginUI = (props: PluginUIProps) => {
             selectedFramework={props.selectedFramework}
             setSelectedFramework={props.setSelectedFramework}
             showAbout={showAbout}
-            showEmail={showEmail}
             setShowAbout={setShowAbout}
-            setShowEmail={setShowEmail}
           />
-          <button
-            className={`px-3 h-8 flex items-center justify-center rounded-md text-sm font-medium transition-colors ${
-              showEmail
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "bg-muted hover:bg-primary/90 hover:text-primary-foreground"
-            }`}
-            onClick={() => {
-              setShowEmail(!showEmail);
-              setShowAbout(false);
-            }}
-          >
-            Email
-          </button>
           <button
             className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium ${
               showAbout
@@ -134,7 +112,6 @@ export const PluginUI = (props: PluginUIProps) => {
             }`}
             onClick={() => {
               setShowAbout(!showAbout);
-              setShowEmail(false);
             }}
             aria-label="About"
           >
@@ -155,8 +132,6 @@ export const PluginUI = (props: PluginUIProps) => {
             useOldPluginVersion={props.settings?.useOldPluginVersion2025}
             onPreferenceChanged={props.onPreferenceChanged}
           />
-        ) : showEmail ? (
-          <EmailPanel />
         ) : (
           <div className="flex flex-col items-center px-4 py-2 gap-2 dark:bg-transparent">
             {isEmpty === false && props.htmlPreview && (

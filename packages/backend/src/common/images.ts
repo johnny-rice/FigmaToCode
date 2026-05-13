@@ -7,7 +7,6 @@ export const PLACEHOLDER_IMAGE_DOMAIN = "https://placehold.co";
 
 const createCanvasImageUrl = (width: number, height: number): string => {
   // Check if we're in a browser environment
-  console.log("typeof document", typeof document);
   if (typeof document === "undefined" || typeof window === "undefined") {
     // Fallback for non-browser environments
     return `${PLACEHOLDER_IMAGE_DOMAIN}/${width}x${height}`;

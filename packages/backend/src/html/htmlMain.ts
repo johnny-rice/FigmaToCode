@@ -393,7 +393,7 @@ const convertNode = (settings: HTMLSettings) => async (node: SceneNode) => {
     }
   }
 
-  switch (node.type) {
+  switch ((node as any).type) {
     case "RECTANGLE":
     case "ELLIPSE":
       return await htmlContainer(node, "", [], settings);
@@ -403,6 +403,7 @@ const convertNode = (settings: HTMLSettings) => async (node: SceneNode) => {
     case "COMPONENT":
     case "INSTANCE":
     case "COMPONENT_SET":
+    case "SLOT":
       return await htmlFrame(node, settings);
     case "SECTION":
       return await htmlSection(node, settings);
@@ -608,7 +609,6 @@ const htmlContainer = async (
         imgUrl = (await exportNodeAsBase64PNG(altNode, hasChildren)) ?? "";
       } else {
         imgUrl = getPlaceholderImage(node.width, node.height);
-        console.log("imgUrl", imgUrl);
       }
 
       if (hasChildren) {

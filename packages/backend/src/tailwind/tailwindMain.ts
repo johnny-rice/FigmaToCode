@@ -54,7 +54,7 @@ const convertNode =
       }
     }
 
-    switch (node.type) {
+    switch ((node as any).type) {
       case "RECTANGLE":
       case "ELLIPSE":
         return tailwindContainer(node, "", "", settings);
@@ -64,6 +64,7 @@ const convertNode =
       case "COMPONENT":
       case "INSTANCE":
       case "COMPONENT_SET":
+      case "SLOT":
         return tailwindFrame(node, settings);
       case "TEXT":
         return tailwindText(node, settings);

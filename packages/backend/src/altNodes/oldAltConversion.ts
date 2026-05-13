@@ -42,6 +42,13 @@ const canBeFlattened = isTypeOrGroupOfTypes([
 export const convertNodeToAltNode =
   (parent: ParentNode | null) =>
   (node: SceneNode): SceneNode => {
+    if ((node as any).type === "SLOT") {
+      const slotNode = node as SceneNode & ChildrenMixin;
+      const group = cloneNode(slotNode, parent);
+      const groupChildren = oldConvertNodesToAltNodes(slotNode.children, group);
+      return assignChildren(groupChildren, group);
+    }
+
     const type = node.type;
     switch (type) {
       // Standard nodes
@@ -142,8 +149,6 @@ export const cloneNode = <T extends BaseNode>(
   if (globalTextStyleSegments[node.id]) {
     altNode.styledTextSegments = globalTextStyleSegments[node.id];
   }
-
-  console.log("altnode:", altNode.parent, cloned.parent);
 
   return altNode;
 };

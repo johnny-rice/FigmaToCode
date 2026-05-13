@@ -7,7 +7,7 @@ import {
   clearWarnings,
   warnings,
 } from "./common/commonConversionWarnings";
-import { postConversionComplete, postEmptyMessage } from "./messaging";
+import { postConversionComplete, postEmptyMessage, postError } from "./messaging";
 import { PluginSettings } from "types";
 import { convertToCode } from "./common/retrieveUI/convertToCode";
 import { generateHTMLPreview } from "./html/htmlMain";
@@ -35,17 +35,54 @@ export const run = async (settings: PluginSettings) => {
     return;
   }
 
+  const MAX_NODE_COUNT_PREVIEW = 1200;
+  const MAX_NODE_COUNT_HARD = 4000;
+  const countNodes = (nodes: ReadonlyArray<SceneNode>) => {
+    let count = 0;
+    const stack = [...nodes];
+    while (stack.length > 0) {
+      const node = stack.pop()!;
+      count += 1;
+      if ("children" in node && Array.isArray(node.children)) {
+        for (const child of node.children) {
+          stack.push(child);
+        }
+      }
+    }
+    return count;
+  };
+
+  const nodeCount = countNodes(selection);
+  if (nodeCount > MAX_NODE_COUNT_HARD) {
+    postError(
+      `Selection too large (${nodeCount} nodes). Please select a smaller frame.`,
+    );
+    return;
+  }
+  const skipHeavyUI = nodeCount > MAX_NODE_COUNT_PREVIEW;
+  if (skipHeavyUI) {
+    addWarning(
+      `Large selection (${nodeCount} nodes). HTML preview and colors are disabled to avoid memory issues.`,
+    );
+  }
+
   // Timing with Date.now() instead of console.time
   const nodeToJSONStart = Date.now();
 
   let convertedSelection: any;
   if (useOldPluginVersion2025) {
     convertedSelection = oldConvertNodesToAltNodes(selection, null);
-    console.log("convertedSelection", convertedSelection);
+    console.log(
+      "[debug] convertedSelection count (old conversion):",
+      convertedSelection.length,
+    );
   } else {
     convertedSelection = await nodesToJSON(selection, settings);
     console.log(`[benchmark] nodesToJSON: ${Date.now() - nodeToJSONStart}ms`);
-    console.log("nodeJson", convertedSelection);
+    console.log(
+      "[debug] convertedSelection count:",
+      convertedSelection.length,
+    );
     // const removeParentRecursive = (obj: any): any => {
     //   if (Array.isArray(obj)) {
     //     return obj.map(removeParentRecursive);
@@ -63,7 +100,14 @@ export const run = async (settings: PluginSettings) => {
     // console.log("nodeJson without parent refs:", removeParentRecursive(convertedSelection));
   }
 
-  console.log("[debug] convertedSelection", { ...convertedSelection[0] });
+  if (convertedSelection.length > 0) {
+    console.log("[debug] first convertedSelection summary:", {
+      id: convertedSelection[0]?.id,
+      type: convertedSelection[0]?.type,
+      name: convertedSelection[0]?.name,
+      childCount: convertedSelection[0]?.children?.length ?? 0,
+    });
+  }
 
   // ignore when nothing was selected
   // If the selection was empty, the converted selection will also be empty.
@@ -78,18 +122,24 @@ export const run = async (settings: PluginSettings) => {
     `[benchmark] convertToCode: ${Date.now() - convertToCodeStart}ms`,
   );
 
-  const generatePreviewStart = Date.now();
-  const htmlPreview = await generateHTMLPreview(convertedSelection, settings);
-  console.log(
-    `[benchmark] generateHTMLPreview: ${Date.now() - generatePreviewStart}ms`,
-  );
+  let htmlPreview = { size: { width: 0, height: 0 }, content: "" };
+  let colors: Awaited<ReturnType<typeof retrieveGenericSolidUIColors>> = [];
+  let gradients: Awaited<ReturnType<typeof retrieveGenericLinearGradients>> = [];
 
-  const colorPanelStart = Date.now();
-  const colors = await retrieveGenericSolidUIColors(framework);
-  const gradients = await retrieveGenericLinearGradients(framework);
-  console.log(
-    `[benchmark] color and gradient panel: ${Date.now() - colorPanelStart}ms`,
-  );
+  if (!skipHeavyUI) {
+    const generatePreviewStart = Date.now();
+    htmlPreview = await generateHTMLPreview(convertedSelection, settings);
+    console.log(
+      `[benchmark] generateHTMLPreview: ${Date.now() - generatePreviewStart}ms`,
+    );
+
+    const colorPanelStart = Date.now();
+    colors = await retrieveGenericSolidUIColors(framework);
+    gradients = await retrieveGenericLinearGradients(framework);
+    console.log(
+      `[benchmark] color and gradient panel: ${Date.now() - colorPanelStart}ms`,
+    );
+  }
   console.log(
     `[benchmark] total generation time: ${Date.now() - nodeToJSONStart}ms`,
   );

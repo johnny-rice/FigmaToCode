@@ -89,8 +89,8 @@ const safeRun = async (settings: PluginSettings) => {
   console.log(
     "[DEBUG] safeRun - Called with isLoading =",
     isLoading,
-    "selection =",
-    figma.currentPage.selection,
+    "selectionCount =",
+    figma.currentPage.selection.length,
   );
   if (isLoading === false) {
     try {
@@ -139,8 +139,8 @@ const standardMode = async () => {
   // Listen for selection changes
   figma.on("selectionchange", () => {
     console.log(
-      "[DEBUG] selectionchange event - New selection:",
-      figma.currentPage.selection,
+      "[DEBUG] selectionchange event - New selection count:",
+      figma.currentPage.selection.length,
     );
     safeRun(userPluginSettings);
   });
@@ -157,7 +157,10 @@ const standardMode = async () => {
   });
 
   figma.ui.onmessage = async (msg) => {
-    console.log("[DEBUG] figma.ui.onmessage", msg);
+    console.log(
+      "[DEBUG] figma.ui.onmessage",
+      msg?.type ? `type=${msg.type}` : "unknown type",
+    );
 
     if (msg.type === "pluginSettingWillChange") {
       const { key, value } = msg as SettingWillChangeMessage<unknown>;
@@ -215,7 +218,11 @@ const standardMode = async () => {
 
       const nodeJson = result;
 
-      console.log("[DEBUG] Exported node JSON:", nodeJson);
+      console.log(
+        "[DEBUG] Exported node JSON:",
+        `jsonCount=${result.json?.length ?? 0}`,
+        `newConversionCount=${result.newConversion?.length ?? 0}`,
+      );
 
       // Send the JSON data back to the UI
       figma.ui.postMessage({
@@ -235,14 +242,13 @@ const codegenMode = async () => {
     "generate",
     async ({ language, node }: CodegenEvent): Promise<CodegenResult[]> => {
       console.log(
-        `[DEBUG] codegen.generate - Language: ${language}, Node:`,
-        node,
+        `[DEBUG] codegen.generate - Language: ${language}, Node: id=${node.id}, type=${node.type}`,
       );
 
       const convertedSelection = await nodesToJSON([node], userPluginSettings);
       console.log(
-        "[DEBUG] codegen.generate - Converted selection:",
-        convertedSelection,
+        "[DEBUG] codegen.generate - Converted selection count:",
+        convertedSelection.length,
       );
 
       switch (language) {

@@ -294,7 +294,7 @@ const processNodePair = async (
     (!jsonNode.children || jsonNode.children.length === 0)
   ) {
     // Convert to rectangle
-    jsonNode.type = "RECTANGLE";
+    (jsonNode as any).type = "RECTANGLE";
     return processNodePair(
       jsonNode,
       figmaNode,
@@ -667,7 +667,13 @@ export const nodesToJSON = async (
     }),
   );
 
-  console.log("[debug] initial nodeJson", { ...nodes[0] });
+  if (nodes.length > 0) {
+    console.log("[debug] initial node summary", {
+      id: nodes[0].id,
+      type: nodes[0].type,
+      name: nodes[0].name,
+    });
+  }
 
   console.log(
     `[benchmark][inside nodesToJSON] JSON_REST_V1 export: ${Date.now() - exportJsonStart}ms`,

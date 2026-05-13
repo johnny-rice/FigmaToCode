@@ -7,7 +7,16 @@ import {
   SettingsChangedMessage,
 } from "types";
 
-export const postBackendMessage = figma.ui.postMessage;
+const safePostMessage = (message: unknown) => {
+  try {
+    figma.ui.postMessage(message);
+  } catch (error) {
+    // Avoid crashing in codegen/no-UI environments.
+    console.warn("[backend] postMessage failed (no UI?)");
+  }
+};
+
+export const postBackendMessage = safePostMessage;
 
 export const postEmptyMessage = () =>
   postBackendMessage({ type: "empty" } as EmptyMessage);
