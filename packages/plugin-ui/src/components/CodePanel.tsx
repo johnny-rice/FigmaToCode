@@ -133,10 +133,13 @@ const CodePanel = (props: CodePanelProps) => {
     };
   }, [preferenceOptions, selectPreferenceOptions, selectedFramework]);
 
+  const hasSettingsBeforeStyling =
+    essentialPreferences.length > 0 || selectableSettingsFiltered.length > 0;
+
   return (
     <div className="w-full flex flex-col gap-2 mt-2">
       <div className="flex items-center justify-between w-full">
-        <p className="text-lg font-medium text-center dark:text-white rounded-lg">
+        <p className="text-lg font-medium text-center text-foreground rounded-lg">
           Code
         </p>
         {!isCodeEmpty && (
@@ -161,7 +164,7 @@ const CodePanel = (props: CodePanelProps) => {
 
           {/* Framework-specific options */}
           {selectableSettingsFiltered.length > 0 && (
-            <div className="mt-1 mb-2 last:mb-0">
+            <div className="mb-2 flex flex-col gap-2 last:mb-0">
               <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
                 {selectedFramework} Options
               </p>
@@ -188,19 +191,21 @@ const CodePanel = (props: CodePanelProps) => {
           {/* Styling preferences with custom prefix for Tailwind */}
           {(stylingPreferences.length > 0 ||
             selectedFramework === "Tailwind") && (
-            <SettingsGroup
-              title="Styling Options"
-              settings={stylingPreferences}
-              selectedSettings={settings}
-              onPreferenceChanged={onPreferenceChanged}
-            >
-              {selectedFramework === "Tailwind" && (
-                <TailwindSettings
-                  settings={settings}
-                  onPreferenceChanged={onPreferenceChanged}
-                />
-              )}
-            </SettingsGroup>
+            <div className={hasSettingsBeforeStyling ? "mt-2" : undefined}>
+              <SettingsGroup
+                title="Styling Options"
+                settings={stylingPreferences}
+                selectedSettings={settings}
+                onPreferenceChanged={onPreferenceChanged}
+              >
+                {selectedFramework === "Tailwind" && (
+                  <TailwindSettings
+                    settings={settings}
+                    onPreferenceChanged={onPreferenceChanged}
+                  />
+                )}
+              </SettingsGroup>
+            </div>
           )}
         </div>
       )}
@@ -221,7 +226,7 @@ const CodePanel = (props: CodePanelProps) => {
                   showLabel={false}
                   onMouseEnter={handleButtonHover}
                   onMouseLeave={handleButtonLeave}
-                  className="pointer-events-auto absolute right-2 top-2 h-7 w-7 rounded-md bg-neutral-800/90 p-0 text-neutral-200 shadow-sm backdrop-blur-sm hover:bg-neutral-700 hover:text-white dark:bg-neutral-800/90 dark:hover:bg-neutral-700"
+                  className="pointer-events-auto absolute right-2 top-2 h-7 w-7 rounded-md bg-neutral-800/90 p-0 text-neutral-200 shadow-sm ring-1 ring-white/10 backdrop-blur-sm hover:bg-neutral-600 hover:text-white hover:ring-white/20 dark:bg-neutral-800/90 dark:hover:bg-neutral-600"
                 />
               </div>
             )}

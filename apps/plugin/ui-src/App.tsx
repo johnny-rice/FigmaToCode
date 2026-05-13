@@ -27,6 +27,17 @@ interface AppState {
 }
 
 const emptyPreview = { size: { width: 0, height: 0 }, content: "" };
+const isDarkFigmaBackground = (background: string) => {
+  const value = background.trim().toLowerCase();
+
+  return Boolean(
+    value &&
+    value !== "#fff" &&
+    value !== "#ffffff" &&
+    value !== "rgb(255, 255, 255)" &&
+    value !== "rgba(255, 255, 255, 1)",
+  );
+};
 
 export default function App() {
   const [state, setState] = useState<AppState>({
@@ -144,10 +155,12 @@ export default function App() {
     }
   };
 
-  const darkMode = figmaColorBgValue !== "#ffffff";
+  const darkMode = isDarkFigmaBackground(figmaColorBgValue);
 
   return (
-    <div className={`${darkMode ? "dark" : ""}`}>
+    <div
+      className={`${darkMode ? "dark" : ""} h-full bg-background text-foreground`}
+    >
       <PluginUI
         isLoading={state.isLoading}
         code={state.code}

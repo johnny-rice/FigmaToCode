@@ -125,9 +125,9 @@ export const PluginUI = (props: PluginUIProps) => {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col h-full overflow-hidden dark:text-white">
-        <div className="p-2 dark:bg-card">
-          <div className="flex gap-1 bg-muted dark:bg-card rounded-lg p-1">
+      <div className="flex flex-col h-full overflow-hidden bg-background text-foreground">
+        <div className="px-2 py-1.5 dark:bg-card">
+          <div className="flex gap-1 bg-muted dark:bg-card rounded-lg p-0.5">
             <FrameworkTabs
               frameworks={frameworks}
               selectedFramework={props.selectedFramework}
@@ -170,7 +170,7 @@ export const PluginUI = (props: PluginUIProps) => {
               <EmptyState />
             </div>
           ) : (
-            <div className="flex flex-col items-center px-4 py-2 gap-2 dark:bg-transparent">
+            <div className="flex flex-col items-center px-4 pt-3 pb-2 gap-2 dark:bg-transparent">
               {props.htmlPreview && (
                 <Preview
                   htmlPreview={props.htmlPreview}
@@ -195,21 +195,25 @@ export const PluginUI = (props: PluginUIProps) => {
               />
 
               {props.colors.length > 0 && (
-                <ColorsPanel
-                  colors={props.colors}
-                  onColorClick={(value) => {
-                    copy(value);
-                  }}
-                />
+                <div className="mt-3 w-full">
+                  <ColorsPanel
+                    colors={props.colors}
+                    onColorClick={(value) => {
+                      copy(value);
+                    }}
+                  />
+                </div>
               )}
 
               {props.gradients.length > 0 && (
-                <GradientsPanel
-                  gradients={props.gradients}
-                  onColorClick={(value) => {
-                    copy(value);
-                  }}
-                />
+                <div className="mt-3 w-full">
+                  <GradientsPanel
+                    gradients={props.gradients}
+                    onColorClick={(value) => {
+                      copy(value);
+                    }}
+                  />
+                </div>
               )}
             </div>
           )}

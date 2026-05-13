@@ -18,7 +18,7 @@ const FrameworkTabs: React.FC<FrameworkTabsProps> = ({
   onChange,
 }) => {
   return (
-    <div className="flex flex-wrap gap-1 my-2">
+    <div className="flex flex-wrap gap-1">
       <div className="flex flex-wrap bg-muted p-1 rounded-lg gap-1 w-fit">
         {options.map((option) => {
           const isSelected = option.value === selectedValue;

@@ -24,7 +24,7 @@ const ColorsPanel = (props: {
   };
 
   return (
-    <div className="bg-card border w-full rounded-lg p-4 flex flex-col gap-2">
+    <div className="bg-card border w-full rounded-lg p-3 flex flex-col gap-2">
       <div className="p-0 pb-2">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">

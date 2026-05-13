@@ -49,7 +49,7 @@ export function CopyButton({
       onMouseLeave={onMouseLeave}
       className={cn(
         "transition-colors duration-300 ease-[cubic-bezier(0.165,0.85,0.45,1)]",
-        "bg-neutral-100 dark:bg-neutral-700",
+        "bg-neutral-100 text-neutral-800 shadow-sm ring-1 ring-neutral-200 hover:bg-neutral-200 hover:text-neutral-950 dark:bg-neutral-800/90 dark:text-neutral-200 dark:ring-white/10 dark:hover:bg-neutral-600 dark:hover:text-white dark:hover:ring-white/20",
         className,
       )}
       aria-label={isCopied ? "Copied!" : "Copy to clipboard"}
