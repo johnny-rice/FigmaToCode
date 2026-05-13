@@ -3,6 +3,7 @@ import Preview from "./components/Preview";
 import GradientsPanel from "./components/GradientsPanel";
 import ColorsPanel from "./components/ColorsPanel";
 import CodePanel from "./components/CodePanel";
+import EmptyState from "./components/EmptyState";
 import About from "./components/About";
 import WarningsPanel from "./components/WarningsPanel";
 import {
@@ -164,9 +165,13 @@ export const PluginUI = (props: PluginUIProps) => {
               useOldPluginVersion={props.settings?.useOldPluginVersion2025}
               onPreferenceChanged={props.onPreferenceChanged}
             />
+          ) : isEmpty ? (
+            <div className="flex min-h-full items-center justify-center">
+              <EmptyState />
+            </div>
           ) : (
             <div className="flex flex-col items-center px-4 py-2 gap-2 dark:bg-transparent">
-              {isEmpty === false && props.htmlPreview && (
+              {props.htmlPreview && (
                 <Preview
                   htmlPreview={props.htmlPreview}
                   expanded={previewExpanded}
